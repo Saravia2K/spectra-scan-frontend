@@ -1,4 +1,7 @@
 import type { Metadata } from "next";
+import ThemeProvider from "@/providers/ThemeProvider";
+import ScrollTop from "@/components/ScrollToTop";
+
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -13,7 +16,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es">
-      <body>{children}</body>
+      <body>
+        <ScrollTop>
+          <ThemeProvider>{children}</ThemeProvider>
+        </ScrollTop>
+      </body>
     </html>
   );
 }
