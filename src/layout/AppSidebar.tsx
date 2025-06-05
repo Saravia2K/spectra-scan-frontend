@@ -12,7 +12,7 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 
 import { useSidebar } from "@/providers/SidebarProvider";
-import { ChevronDownIcon, HorizontalDotsIcon } from "@/icons";
+import { ChevronDownIcon, HorizontalDotsIcon, UserCircleIcon } from "@/icons";
 
 type NavItem = {
   name: string;
@@ -21,75 +21,22 @@ type NavItem = {
   subItems?: { name: string; path: string; pro?: boolean; new?: boolean }[];
 };
 
-const navItems: NavItem[] = [];
+const navItems: NavItem[] = [
+  {
+    icon: <UserCircleIcon />,
+    name: "Doctores",
+    path: "/doctores",
+  },
+];
 // const navItems: NavItem[] = [
 //   {
 //     icon: <GridIcon />,
 //     name: "Dashboard",
-//     subItems: [{ name: "Ecommerce", path: "/", pro: false }],
-//   },
-//   {
-//     icon: <CalenderIcon />,
-//     name: "Calendar",
-//     path: "/calendar",
-//   },
-//   {
-//     icon: <UserCircleIcon />,
-//     name: "User Profile",
-//     path: "/profile",
-//   },
-
-//   {
-//     name: "Forms",
-//     icon: <ListIcon />,
-//     subItems: [{ name: "Form Elements", path: "/form-elements", pro: false }],
-//   },
-//   {
-//     name: "Tables",
-//     icon: <TableIcon />,
-//     subItems: [{ name: "Basic Tables", path: "/basic-tables", pro: false }],
-//   },
-//   {
-//     name: "Pages",
-//     icon: <PageIcon />,
-//     subItems: [
-//       { name: "Blank Page", path: "/blank", pro: false },
-//       { name: "404 Error", path: "/error-404", pro: false },
-//     ],
+//     subItems: [{ name: "Ecommerce", path: "/"}],
 //   },
 // ];
 
 const othersItems: NavItem[] = [];
-// const othersItems: NavItem[] = [
-//   {
-//     icon: <PieChartIcon />,
-//     name: "Charts",
-//     subItems: [
-//       { name: "Line Chart", path: "/line-chart", pro: false },
-//       { name: "Bar Chart", path: "/bar-chart", pro: false },
-//     ],
-//   },
-//   {
-//     icon: <BoxCubeIcon />,
-//     name: "UI Elements",
-//     subItems: [
-//       { name: "Alerts", path: "/alerts", pro: false },
-//       { name: "Avatar", path: "/avatars", pro: false },
-//       { name: "Badge", path: "/badge", pro: false },
-//       { name: "Buttons", path: "/buttons", pro: false },
-//       { name: "Images", path: "/images", pro: false },
-//       { name: "Videos", path: "/videos", pro: false },
-//     ],
-//   },
-//   {
-//     icon: <PlugInIcon />,
-//     name: "Authentication",
-//     subItems: [
-//       { name: "Sign In", path: "/signin", pro: false },
-//       { name: "Sign Up", path: "/signup", pro: false },
-//     ],
-//   },
-// ];
 
 const AppSidebar: FC = () => {
   const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar();
@@ -141,13 +88,13 @@ const AppSidebar: FC = () => {
           ) : (
             nav.path && (
               <Link
-                href={nav.path}
+                href={`/dashboard${nav.path}`}
                 className={`menu-item group ${
                   isActive(nav.path) ? "menu-item-active" : "menu-item-inactive"
                 }`}
               >
                 <span
-                  className={`${
+                  className={`w-fit ${
                     isActive(nav.path)
                       ? "menu-item-icon-active"
                       : "menu-item-icon-inactive"
@@ -198,17 +145,6 @@ const AppSidebar: FC = () => {
                             new
                           </span>
                         )}
-                        {subItem.pro && (
-                          <span
-                            className={`ml-auto ${
-                              isActive(subItem.path)
-                                ? "menu-dropdown-badge-active"
-                                : "menu-dropdown-badge-inactive"
-                            } menu-dropdown-badge `}
-                          >
-                            pro
-                          </span>
-                        )}
                       </span>
                     </Link>
                   </li>
@@ -230,8 +166,10 @@ const AppSidebar: FC = () => {
   );
   const subMenuRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
-  // const isActive = (path: string) => path === pathname;
-  const isActive = useCallback((path: string) => path === pathname, [pathname]);
+  const isActive = useCallback(
+    (path: string) => `/dashboard${path}` === pathname,
+    [pathname]
+  );
 
   useEffect(() => {
     // Check if the current path matches any submenu item
