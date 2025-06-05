@@ -1,6 +1,14 @@
 import type { Metadata } from "next";
+import { Outfit } from "next/font/google";
+
+import { ThemeProvider } from "@/providers/ThemeProvider";
+import { SidebarProvider } from "@/providers/SidebarProvider";
 
 import "./globals.css";
+
+const outfit = Outfit({
+  subsets: ["latin"],
+});
 
 export const metadata: Metadata = {
   title: "SpectraScan",
@@ -14,7 +22,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es">
-      <body>{children}</body>
+      <body className={`${outfit.className} dark:bg-gray-900`}>
+        <ThemeProvider>
+          <SidebarProvider>{children}</SidebarProvider>
+        </ThemeProvider>
+      </body>
     </html>
   );
 }
