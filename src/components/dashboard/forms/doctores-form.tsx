@@ -1,28 +1,89 @@
 "use client";
 
+import { useMemo } from "react";
 import { z } from "zod";
 import { SubmitHandler, useForm } from "react-hook-form";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 import Input from "@/components/form/input/InputField";
 import Label from "@/components/form/Label";
 import Button from "@/components/ui/button/Button";
 
-export default function DoctoresForm({ onSubmit }: TDocotresFormProps) {
+export default function DoctoresForm({
+  onSubmit,
+  defaultValues,
+}: TDocotresFormProps) {
+  /**
+   * Creating Schema with validations based on defaultValues
+   */
+  const Schema = useMemo(() => {
+    const isEdit = !!defaultValues;
+    return z
+      .object({
+        names: z
+          .string()
+          .max(255, "Máximo 255 caracteres")
+          .refine((val) => isEdit || val.trim() !== "", {
+            message: "Campo requerido",
+          }),
+        last_names: z
+          .string()
+          .max(255, "Máximo 255 caracteres")
+          .refine((val) => isEdit || val.trim() !== "", {
+            message: "Campo requerido",
+          }),
+        email: z
+          .string()
+          .email("Correo inválido")
+          .refine((val) => isEdit || val.trim() !== "", {
+            message: "Campo requerido",
+          }),
+        password: z
+          .string()
+          .refine((val) => isEdit || val !== "", {
+            message: "Campo requerido",
+          })
+          .refine((val) => isEdit || val.length >= 6, {
+            message: "Mínimo 6 caracteres",
+          }),
+        confirmPassword: z.string().refine((val) => isEdit || val !== "", {
+          message: "Campo requerido",
+        }),
+      })
+      .refine((data) => isEdit || data.password === data.confirmPassword, {
+        message: "La contraseña no es la misma",
+        path: ["confirmPassword"],
+      });
+  }, []);
+
+  /**
+   * Initializing useForm hook with zod Schema
+   */
   const {
     handleSubmit,
     register,
     formState: { errors },
   } = useForm<TDoctoresFormFields>({
-    resolver: zodResolver(FormSchema),
+    resolver: zodResolver(Schema),
     defaultValues: {
-      names: "",
-      last_names: "",
-      email: "",
+      names: defaultValues?.names || "",
+      last_names: defaultValues?.last_names || "",
+      email: defaultValues?.email || "",
+      password: "",
+      confirmPassword: "",
     },
   });
 
+  const handleOnSubmit: SubmitHandler<TDoctoresFormFields> = (data) => {
+    const { confirmPassword, ...doctorData } = data;
+    onSubmit(doctorData);
+  };
+
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
+    <form
+      onSubmit={handleSubmit(handleOnSubmit)}
+      className="flex flex-col gap-4"
+    >
       <div className="grid lg:grid-cols-3 md:grid-cols-2 gap-4">
         <div>
           <Label>Nombres</Label>
@@ -44,7 +105,7 @@ export default function DoctoresForm({ onSubmit }: TDocotresFormProps) {
             {...register("last_names")}
           />
         </div>
-        <div>
+        <div className="md:col-span-2 lg:col-span-1">
           <Label>Correo electrónico</Label>
           <Input
             placeholder="Escribe tu correo electrónico aquí"
@@ -89,32 +150,18 @@ export default function DoctoresForm({ onSubmit }: TDocotresFormProps) {
 }
 
 type TDocotresFormProps = {
-  onSubmit: SubmitHandler<TDoctoresFormFields>;
+  onSubmit: SubmitHandler<TDoctoresFormData>;
+  defaultValues?: Partial<
+    Omit<TDoctoresFormFields, "password" | "confirmPassword">
+  >;
 };
 
-const FormSchema = z
-  .object({
-    names: z
-      .string()
-      .nonempty("Campo requerido")
-      .max(255, "Máximos de 255 caracteres"),
-    last_names: z
-      .string()
-      .nonempty("Campo requerido")
-      .max(255, "Máximos de 255 caracteres"),
-    email: z
-      .string()
-      .email("Ingrese un correo electrónico válido")
-      .nonempty("Campo requerido"),
-    password: z
-      .string()
-      .nonempty("Campo requerido")
-      .min(6, "Mínimo 6 caractéres"),
-    confirmPassword: z.string().nonempty("Campo requerido"),
-  })
-  .refine((data) => data.password == data.confirmPassword, {
-    message: "La contraseña no es la misma",
-    path: ["confirmPassword"],
-  });
+export type TDoctoresFormFields = {
+  names: string;
+  last_names: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+};
 
-export type TDoctoresFormFields = z.infer<typeof FormSchema>;
+export type TDoctoresFormData = Omit<TDoctoresFormFields, "confirmPassword">;

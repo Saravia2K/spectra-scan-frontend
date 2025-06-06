@@ -1,9 +1,9 @@
 "use client";
 
-import DoctoresForm, { TDoctoresFormFields } from "./forms/doctores-form";
+import DoctoresForm, { TDoctoresFormData } from "./forms/doctores-form";
 
 export default function AddDoctorForm() {
-  const handleSubmit = (data: TDoctoresFormFields) => {
+  const handleSubmit = (data: TDoctoresFormData) => {
     // TODO: conectar con la API
   };
 
