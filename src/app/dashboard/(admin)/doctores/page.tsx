@@ -1,11 +1,12 @@
 "use server";
 
+import { Metadata } from "next";
+import Link from "next/link";
+
 import ComponentCard from "@/components/common/ComponentCard";
 import PageBreadcrumb from "@/components/common/PageBreadCrumb";
 import Table from "@/components/tables";
 import Button from "@/components/ui/button/Button";
-import { Metadata } from "next";
-import Link from "next/link";
 
 export const generateMetadata = async (): Promise<Metadata> => ({
   title: "Doctores | SpectraScan",

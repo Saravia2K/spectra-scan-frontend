@@ -167,7 +167,7 @@ const AppSidebar: FC = () => {
   const subMenuRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
   const isActive = useCallback(
-    (path: string) => `/dashboard${path}` === pathname,
+    (path: string) => pathname.includes(`/dashboard${path}`),
     [pathname]
   );
 
