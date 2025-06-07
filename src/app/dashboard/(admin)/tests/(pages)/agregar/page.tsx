@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 
 import ComponentCard from "@/components/common/ComponentCard";
-import AddTestForm from "../components/add-test-form";
+import AddTestForm from "../../components/add-test-form";
 
 export const metadata: Metadata = {
   title: "Agregar test | SpectraScan",
