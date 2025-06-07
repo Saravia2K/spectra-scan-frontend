@@ -19,11 +19,13 @@ import {
   HorizontalDotsIcon,
 } from "@/icons";
 
+type SubItem = { name: string; path: string; pro?: boolean; new?: boolean };
+
 type NavItem = {
   name: string;
   icon: ReactNode;
   path?: string;
-  subItems?: { name: string; path: string; pro?: boolean; new?: boolean }[];
+  subItems?: SubItem[];
 };
 
 const navItems: NavItem[] = [
@@ -35,16 +37,12 @@ const navItems: NavItem[] = [
   {
     icon: <DocsIcon />,
     name: "Tests",
-    path: "/tests",
+    subItems: [
+      { name: "Detalles de test", path: "/tests" },
+      { name: "Categorías de preguntas", path: "/tests/categorias" },
+    ],
   },
 ];
-// const navItems: NavItem[] = [
-//   {
-//     icon: <GridIcon />,
-//     name: "Dashboard",
-//     subItems: [{ name: "Ecommerce", path: "/"}],
-//   },
-// ];
 
 const othersItems: NavItem[] = [];
 
@@ -135,9 +133,9 @@ const AppSidebar: FC = () => {
                 {nav.subItems.map((subItem) => (
                   <li key={subItem.name}>
                     <Link
-                      href={subItem.path}
+                      href={`/dashboard${subItem.path}`}
                       className={`menu-dropdown-item ${
-                        isActive(subItem.path)
+                        isActive(subItem.path, nav.subItems)
                           ? "menu-dropdown-item-active"
                           : "menu-dropdown-item-inactive"
                       }`}
@@ -147,7 +145,7 @@ const AppSidebar: FC = () => {
                         {subItem.new && (
                           <span
                             className={`ml-auto ${
-                              isActive(subItem.path)
+                              isActive(subItem.path, nav.subItems)
                                 ? "menu-dropdown-badge-active"
                                 : "menu-dropdown-badge-inactive"
                             } menu-dropdown-badge `}
@@ -177,7 +175,17 @@ const AppSidebar: FC = () => {
   const subMenuRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
   const isActive = useCallback(
-    (path: string) => pathname.includes(`/dashboard${path}`),
+    (path: string, subItemsFamily: SubItem[] = []) => {
+      const fullPath = `/dashboard${path}`;
+      const isExactPath = pathname == fullPath;
+      const brothers = subItemsFamily.filter((i) => i.path != path);
+      const isBrotherPath = brothers
+        .map((b) => ({ ...b, path: `/dashboard${b.path}` }))
+        .some((b) => b.path.includes(fullPath));
+      const isSubURL = pathname.includes(fullPath) && !isBrotherPath;
+
+      return isExactPath || isSubURL;
+    },
     [pathname]
   );
 
@@ -299,23 +307,6 @@ const AppSidebar: FC = () => {
                 )}
               </h2>
               {renderMenuItems(navItems, "main")}
-            </div>
-
-            <div className="">
-              <h2
-                className={`mb-4 text-xs uppercase flex leading-[20px] text-gray-400 ${
-                  !isExpanded && !isHovered
-                    ? "lg:justify-center"
-                    : "justify-start"
-                }`}
-              >
-                {isExpanded || isHovered || isMobileOpen ? (
-                  "Others"
-                ) : (
-                  <HorizontalDotsIcon />
-                )}
-              </h2>
-              {renderMenuItems(othersItems, "others")}
             </div>
           </div>
         </nav>

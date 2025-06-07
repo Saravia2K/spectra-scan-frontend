@@ -3,3 +3,7 @@ export type Test = {
   description: string;
   cutoff: number;
 };
+
+export type TestCategory = {
+  name: string;
+};
