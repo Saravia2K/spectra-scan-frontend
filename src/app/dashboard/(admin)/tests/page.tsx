@@ -5,14 +5,16 @@ import Link from "next/link";
 
 import ComponentCard from "@/components/common/ComponentCard";
 import PageBreadcrumb from "@/components/common/PageBreadCrumb";
-import Table from "@/components/tables";
 import Button from "@/components/ui/button/Button";
+import TestsTable from "./components/tests-table";
+import getAllTests from "@/services/test/getAllTests";
 
 export const generateMetadata = async (): Promise<Metadata> => ({
   title: "Tests | SpectraScan",
 });
 
 export default async function TestPage() {
+  const tests = await getAllTests();
   return (
     <>
       <PageBreadcrumb pageTitle="Tests" />
@@ -23,16 +25,7 @@ export default async function TestPage() {
           </Link>
         }
       >
-        <Table
-          headers={
-            [
-              { key: "name", text: "Nombre" },
-              { key: "description", text: "Descripción" },
-              { key: "cutoff", text: "Corte" },
-            ] as const
-          }
-          data={[]}
-        />
+        <TestsTable tests={tests} />
       </ComponentCard>
     </>
   );
