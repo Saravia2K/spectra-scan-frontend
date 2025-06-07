@@ -12,16 +12,16 @@ import type { Patient, Tutor } from "@/common/types/patient";
 import Button from "../ui/button/Button";
 
 const TutorSchema = z.object({
-  names: z.string().nonempty("Campo requerido"),
-  last_names: z.string().nonempty("Campo requerido"),
-  email: z.string().email("Ingrese un correo electrónico correcto"),
-  relationship: z.string().nonempty("Campo requerido"),
+  names: z.string(),
+  last_names: z.string(),
+  email: z.string(),
+  relationship: z.string(),
 });
 
 const PatientSchema = z.object({
   patient_names: z.string().nonempty("Campo requerido"),
   patient_last_names: z.string().nonempty("Campo requerido"),
-  patient_age: z.number().min(3, "Ingrese una edad superior a 3 años"),
+  patient_age: z.number({ coerce: true }).min(3, "Ingrese una edad superior a 3 años"),
   tutor: TutorSchema.optional(),
 });
 
@@ -39,6 +39,7 @@ export default function PatientForm({ onSubmit }: PatientFormProps) {
   });
 
   const handleOnSubmit: SubmitHandler<TPatientSchema> = (data) => {
+    console.log(data);
     onSubmit({
       names: data.patient_names,
       last_names: data.patient_last_names,
@@ -71,13 +72,13 @@ export default function PatientForm({ onSubmit }: PatientFormProps) {
           />
         </div>
         <div>
-          <Label htmlFor="patient_names">Edad del paciente</Label>
+          <Label htmlFor="patient_age">Edad del paciente</Label>
           <Input
-            id="patient_names"
-            placeholder="Ingrese el nombre del paciente"
-            error={!!errors.patient_names}
-            hint={errors.patient_names?.message}
-            {...register("patient_names")}
+            id="patient_age"
+            placeholder="Ingrese la edad del paciente"
+            error={!!errors.patient_age}
+            hint={errors.patient_age?.message}
+            {...register("patient_age")}
           />
         </div>
         <div>
@@ -135,7 +136,7 @@ export default function PatientForm({ onSubmit }: PatientFormProps) {
   );
 }
 
-type PatientFormData = Omit<Patient, "doctor" | "registration_date" | "tutor"> & {
+export type PatientFormData = Omit<Patient, "doctor" | "registration_date" | "tutor"> & {
   tutor?: Omit<Tutor, "patient">;
 };
 

@@ -1,6 +1,6 @@
 // src/store/useAuthStore.ts
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { createJSONStorage, persist } from "zustand/middleware";
 
 interface Doctor {
   id: number;
@@ -38,6 +38,7 @@ export const useAuthStore = create<AuthState>()(
     }),
     {
       name: "auth-storage", // nombre en localStorage
+      storage: createJSONStorage(() => localStorage),
     }
   )
 );

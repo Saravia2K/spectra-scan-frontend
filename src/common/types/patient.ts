@@ -6,7 +6,7 @@ export type Patient = {
   last_names: string;
   age: number;
   registration_date: Date;
-  tutor?: Tutor;
+  tutors?: Tutor[];
 };
 
 export type Tutor = {

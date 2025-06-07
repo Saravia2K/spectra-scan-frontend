@@ -51,10 +51,7 @@ const AppSidebar: FC = () => {
       {
         icon: <DocsIcon />,
         name: "Tests",
-        subItems: [
-          { name: "Detalles de test", path: "/tests" },
-          { name: "Categorías de preguntas", path: "/tests/categorias" },
-        ],
+        path: "/pacientes/tests",
       },
     ];
 

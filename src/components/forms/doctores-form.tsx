@@ -9,10 +9,7 @@ import Input from "@/components/form/input/InputField";
 import Label from "@/components/form/Label";
 import Button from "@/components/ui/button/Button";
 
-export default function DoctoresForm({
-  onSubmit,
-  defaultValues,
-}: TDoctoresFormProps) {
+export default function DoctoresForm({ onSubmit, defaultValues }: TDoctoresFormProps) {
   /**
    * Creating Schema with validations based on defaultValues
    */
@@ -60,10 +57,7 @@ export default function DoctoresForm({
   };
 
   return (
-    <form
-      onSubmit={handleSubmit(handleOnSubmit)}
-      className="flex flex-col gap-4"
-    >
+    <form onSubmit={handleSubmit(handleOnSubmit)} className="flex flex-col gap-4">
       <div className="grid lg:grid-cols-3 md:grid-cols-2 gap-4">
         <div>
           <Label>Nombres</Label>

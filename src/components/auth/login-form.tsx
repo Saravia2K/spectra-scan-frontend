@@ -31,7 +31,8 @@ export default function LoginForm() {
   const onSubmit: SubmitHandler<FormFields> = async (data) => {
     try {
       const perfil = await login(data.email, data.password);
-      if (perfil.id == 0) router.push("/dashboard/doctores");
+      console.log({ perfil });
+      if (perfil?.id == 0) router.push("/dashboard/doctores");
       else router.push("/dashboard/pacientes");
     } catch (error) {
       Swal.fire({
