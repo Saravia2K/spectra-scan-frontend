@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 
 import ComponentCard from "@/components/common/ComponentCard";
-import EditDoctorForm from "@/components/dashboard/edit-doctor-form";
+import EditDoctorForm from "../../components/edit-doctor-form";
 
 export const metadata: Metadata = {
   title: "Agregar doctor | SpectraScan",

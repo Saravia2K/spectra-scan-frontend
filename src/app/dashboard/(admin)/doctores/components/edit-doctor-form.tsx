@@ -1,9 +1,9 @@
 "use client";
 
-import DoctoresForm, { TDoctoresFormData } from "./forms/doctores-form";
+import DoctoresForm, { DoctorData } from "@/components/forms/doctores-form";
 
 export default function EditDoctorForm() {
-  const handleSubmit = (data: TDoctoresFormData) => {
+  const handleSubmit = (data: DoctorData) => {
     // TODO: conectar con la API
   };
 

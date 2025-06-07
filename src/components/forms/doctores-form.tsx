@@ -20,32 +20,12 @@ export default function DoctoresForm({
     const isEdit = !!defaultValues;
     return z
       .object({
-        names: z
-          .string()
-          .max(255, "Máximo 255 caracteres")
-          .refine((val) => isEdit || val.trim() !== "", {
-            message: "Campo requerido",
-          }),
-        last_names: z
-          .string()
-          .max(255, "Máximo 255 caracteres")
-          .refine((val) => isEdit || val.trim() !== "", {
-            message: "Campo requerido",
-          }),
-        email: z
-          .string()
-          .email("Correo inválido")
-          .refine((val) => isEdit || val.trim() !== "", {
-            message: "Campo requerido",
-          }),
-        password: z
-          .string()
-          .refine((val) => isEdit || val !== "", {
-            message: "Campo requerido",
-          })
-          .refine((val) => isEdit || val.length >= 6, {
-            message: "Mínimo 6 caracteres",
-          }),
+        names: z.string().max(255, "Máximo 255 caracteres"),
+        last_names: z.string().max(255, "Máximo 255 caracteres"),
+        email: z.string().email("Correo inválido"),
+        password: z.string().refine((val) => isEdit || val.length >= 6, {
+          message: "Mínimo 6 caracteres",
+        }),
         confirmPassword: z.string().refine((val) => isEdit || val !== "", {
           message: "Campo requerido",
         }),
@@ -149,19 +129,18 @@ export default function DoctoresForm({
   );
 }
 
-type TDoctoresFormProps = {
-  onSubmit: SubmitHandler<TDoctoresFormData>;
-  defaultValues?: Partial<
-    Omit<TDoctoresFormFields, "password" | "confirmPassword">
-  >;
-};
-
-export type TDoctoresFormFields = {
+export type DoctorData = {
   names: string;
   last_names: string;
   email: string;
   password: string;
+};
+
+export type TDoctoresFormFields = DoctorData & {
   confirmPassword: string;
 };
 
-export type TDoctoresFormData = Omit<TDoctoresFormFields, "confirmPassword">;
+type TDoctoresFormProps = {
+  onSubmit: SubmitHandler<DoctorData>;
+  defaultValues?: Partial<Omit<DoctorData, "password">>;
+};
