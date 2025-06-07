@@ -9,6 +9,15 @@ const nextConfig: NextConfig = {
     });
     return config;
   },
+  async redirects() {
+    return [
+      {
+        source: "/",
+        destination: "/iniciar-sesion",
+        permanent: false,
+      },
+    ];
+  },
 };
 
 export default nextConfig;

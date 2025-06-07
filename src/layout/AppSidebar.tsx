@@ -1,23 +1,12 @@
 "use client";
-import {
-  useRef,
-  useState,
-  useEffect,
-  useCallback,
-  type FC,
-  type ReactNode,
-} from "react";
+import { useRef, useState, useEffect, useCallback, type FC, type ReactNode } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 
 import { useSidebar } from "@/providers/SidebarProvider";
-import {
-  DocsIcon,
-  UserCircleIcon,
-  ChevronDownIcon,
-  HorizontalDotsIcon,
-} from "@/icons";
+import { DocsIcon, UserCircleIcon, ChevronDownIcon, HorizontalDotsIcon } from "@/icons";
+import { useAuthStore } from "@/hooks/useUser";
 
 type SubItem = { name: string; path: string; pro?: boolean; new?: boolean };
 
@@ -28,32 +17,48 @@ type NavItem = {
   subItems?: SubItem[];
 };
 
-const navItems: NavItem[] = [
-  {
-    icon: <UserCircleIcon />,
-    name: "Doctores",
-    path: "/doctores",
-  },
-  {
-    icon: <DocsIcon />,
-    name: "Tests",
-    subItems: [
-      { name: "Detalles de test", path: "/tests" },
-      { name: "Categorías de preguntas", path: "/tests/categorias" },
-    ],
-  },
-];
-
 const othersItems: NavItem[] = [];
 
 const AppSidebar: FC = () => {
+  const user = useAuthStore().doctor;
   const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar();
   const pathname = usePathname();
 
-  const renderMenuItems = (
-    navItems: NavItem[],
-    menuType: "main" | "others"
-  ) => (
+  let navItems: NavItem[] = [];
+  if (user?.id == 0)
+    navItems = [
+      {
+        icon: <UserCircleIcon />,
+        name: "Doctores",
+        path: "/doctores",
+      },
+      {
+        icon: <DocsIcon />,
+        name: "Tests",
+        subItems: [
+          { name: "Detalles de test", path: "/tests" },
+          { name: "Categorías de preguntas", path: "/tests/categorias" },
+        ],
+      },
+    ];
+  else
+    navItems = [
+      {
+        icon: <UserCircleIcon />,
+        name: "Pacientes",
+        path: "/pacientes",
+      },
+      {
+        icon: <DocsIcon />,
+        name: "Tests",
+        subItems: [
+          { name: "Detalles de test", path: "/tests" },
+          { name: "Categorías de preguntas", path: "/tests/categorias" },
+        ],
+      },
+    ];
+
+  const renderMenuItems = (navItems: NavItem[], menuType: "main" | "others") => (
     <ul className="flex flex-col gap-4">
       {navItems.map((nav, index) => (
         <li key={nav.name}>
@@ -65,9 +70,7 @@ const AppSidebar: FC = () => {
                   ? "menu-item-active"
                   : "menu-item-inactive"
               } cursor-pointer ${
-                !isExpanded && !isHovered
-                  ? "lg:justify-center"
-                  : "lg:justify-start"
+                !isExpanded && !isHovered ? "lg:justify-center" : "lg:justify-start"
               }`}
             >
               <span
@@ -85,8 +88,7 @@ const AppSidebar: FC = () => {
               {(isExpanded || isHovered || isMobileOpen) && (
                 <ChevronDownIcon
                   className={`ml-auto w-5 h-5 transition-transform duration-200  ${
-                    openSubmenu?.type === menuType &&
-                    openSubmenu?.index === index
+                    openSubmenu?.type === menuType && openSubmenu?.index === index
                       ? "rotate-180 text-brand-500"
                       : ""
                   }`}
@@ -103,9 +105,7 @@ const AppSidebar: FC = () => {
               >
                 <span
                   className={`w-fit ${
-                    isActive(nav.path)
-                      ? "menu-item-icon-active"
-                      : "menu-item-icon-inactive"
+                    isActive(nav.path) ? "menu-item-icon-active" : "menu-item-icon-inactive"
                   }`}
                 >
                   {nav.icon}
@@ -169,9 +169,7 @@ const AppSidebar: FC = () => {
     type: "main" | "others";
     index: number;
   } | null>(null);
-  const [subMenuHeight, setSubMenuHeight] = useState<Record<string, number>>(
-    {}
-  );
+  const [subMenuHeight, setSubMenuHeight] = useState<Record<string, number>>({});
   const subMenuRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
   const isActive = useCallback(
@@ -230,11 +228,7 @@ const AppSidebar: FC = () => {
 
   const handleSubmenuToggle = (index: number, menuType: "main" | "others") => {
     setOpenSubmenu((prevOpenSubmenu) => {
-      if (
-        prevOpenSubmenu &&
-        prevOpenSubmenu.type === menuType &&
-        prevOpenSubmenu.index === index
-      ) {
+      if (prevOpenSubmenu && prevOpenSubmenu.type === menuType && prevOpenSubmenu.index === index) {
         return null;
       }
       return { type: menuType, index };
@@ -244,13 +238,7 @@ const AppSidebar: FC = () => {
   return (
     <aside
       className={`fixed mt-16 flex flex-col lg:mt-0 top-0 px-5 left-0 bg-white dark:bg-gray-900 dark:border-gray-800 text-gray-900 h-screen transition-all duration-300 ease-in-out z-50 border-r border-gray-200 
-        ${
-          isExpanded || isMobileOpen
-            ? "w-[290px]"
-            : isHovered
-            ? "w-[290px]"
-            : "w-[90px]"
-        }
+        ${isExpanded || isMobileOpen ? "w-[290px]" : isHovered ? "w-[290px]" : "w-[90px]"}
         ${isMobileOpen ? "translate-x-0" : "-translate-x-full"}
         lg:translate-x-0`}
       onMouseEnter={() => !isExpanded && setIsHovered(true)}
@@ -280,12 +268,7 @@ const AppSidebar: FC = () => {
               />
             </>
           ) : (
-            <Image
-              src="/images/logo/logo-icon.svg"
-              alt="Logo"
-              width={32}
-              height={32}
-            />
+            <Image src="/images/logo/logo-icon.svg" alt="Logo" width={32} height={32} />
           )}
         </Link>
       </div>
@@ -295,16 +278,10 @@ const AppSidebar: FC = () => {
             <div>
               <h2
                 className={`mb-4 text-xs uppercase flex leading-[20px] text-gray-400 ${
-                  !isExpanded && !isHovered
-                    ? "lg:justify-center"
-                    : "justify-start"
+                  !isExpanded && !isHovered ? "lg:justify-center" : "justify-start"
                 }`}
               >
-                {isExpanded || isHovered || isMobileOpen ? (
-                  "Menu"
-                ) : (
-                  <HorizontalDotsIcon />
-                )}
+                {isExpanded || isHovered || isMobileOpen ? "Menu" : <HorizontalDotsIcon />}
               </h2>
               {renderMenuItems(navItems, "main")}
             </div>

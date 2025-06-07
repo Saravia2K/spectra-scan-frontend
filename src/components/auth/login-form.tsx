@@ -9,8 +9,12 @@ import Input from "@/components/form/input/InputField";
 import Label from "@/components/form/Label";
 import Button from "@/components/ui/button/Button";
 import { EyeCloseIcon, EyeIcon } from "@/icons";
+import Swal from "sweetalert2";
+import login from "@/services/auth/login";
+import { useRouter } from "next/navigation";
 
 export default function LoginForm() {
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const {
     handleSubmit,
@@ -24,8 +28,17 @@ export default function LoginForm() {
     },
   });
 
-  const onSubmit: SubmitHandler<FormFields> = (data) => {
-    console.log(data);
+  const onSubmit: SubmitHandler<FormFields> = async (data) => {
+    try {
+      const perfil = await login(data.email, data.password);
+      if (perfil.id == 0) router.push("/dashboard/doctores");
+      else router.push("/dashboard/pacientes");
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Error al intentar hacer login",
+      });
+    }
   };
 
   return (
