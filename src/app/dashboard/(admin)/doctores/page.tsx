@@ -7,12 +7,15 @@ import ComponentCard from "@/components/common/ComponentCard";
 import PageBreadcrumb from "@/components/common/PageBreadCrumb";
 import Table from "@/components/tables";
 import Button from "@/components/ui/button/Button";
+import GetAllDoctors from "@/services/doctors/getAllDoctors";
+import DoctorsTable from "./components/doctors-table";
 
 export const generateMetadata = async (): Promise<Metadata> => ({
   title: "Doctores | SpectraScan",
 });
 
 export default async function DoctoresPage() {
+  const doctores = await GetAllDoctors();
   return (
     <>
       <PageBreadcrumb pageTitle="Doctores" />
@@ -23,18 +26,7 @@ export default async function DoctoresPage() {
           </Link>
         }
       >
-        <Table
-          headers={
-            [
-              { key: "names", text: "Nombres" },
-              { key: "last_names", text: "Apellidos" },
-              { key: "email", text: "Correo electrónico" },
-              { key: "last_login", text: "Último ingreso" },
-              { key: "registration_date", text: "Fecha de registro" },
-            ] as const
-          }
-          data={[]}
-        />
+        <DoctorsTable doctors={doctores} />
       </ComponentCard>
     </>
   );

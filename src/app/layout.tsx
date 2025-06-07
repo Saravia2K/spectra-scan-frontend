@@ -5,6 +5,7 @@ import { ThemeProvider } from "@/providers/ThemeProvider";
 import { SidebarProvider } from "@/providers/SidebarProvider";
 
 import "./globals.css";
+import ReactQueryProvider from "@/providers/ReactQueryProvider";
 
 const outfit = Outfit({
   subsets: ["latin"],
@@ -23,9 +24,11 @@ export default function RootLayout({
   return (
     <html lang="es">
       <body className={`${outfit.className} dark:bg-gray-900`}>
-        <ThemeProvider>
-          <SidebarProvider>{children}</SidebarProvider>
-        </ThemeProvider>
+        <ReactQueryProvider>
+          <ThemeProvider>
+            <SidebarProvider>{children}</SidebarProvider>
+          </ThemeProvider>
+        </ReactQueryProvider>
       </body>
     </html>
   );
