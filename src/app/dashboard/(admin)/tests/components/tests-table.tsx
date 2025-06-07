@@ -21,6 +21,8 @@ export default function TestsTable({ tests }: TestsTableProps) {
       actions={{
         onEdit: (r) =>
           router.push(`/dashboard/tests/${tests.find((t) => t.name == r.name)?.id}/editar`),
+        onShow: (r) =>
+          router.push(`/dashboard/tests/${tests.find((t) => t.name == r.name)?.id}/preguntas`),
       }}
     />
   );

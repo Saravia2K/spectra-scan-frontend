@@ -1,5 +1,3 @@
-import { SCORABLE_VALUES } from "../enums/test";
-
 export type Test = {
   name: string;
   description: string;
@@ -13,6 +11,7 @@ export type TestCategory = {
 export type TestQuestion = {
   test_id: number;
   category_id: number;
+  category?: TestCategory;
   text: string;
-  scorable_values: SCORABLE_VALUES[];
+  scorable_values: string[];
 };

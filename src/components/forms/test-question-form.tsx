@@ -1,6 +1,5 @@
 "use client";
 
-import { useParams } from "next/navigation";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -11,13 +10,31 @@ import Button from "@/components/ui/button/Button";
 import Select from "@/components/form/Select";
 import MultiSelect from "@/components/form/MultiSelect";
 import { ChevronDownIcon } from "@/icons";
-import { TestQuestion } from "@/common/types/test";
+import { TestCategory, TestQuestion } from "@/common/types/test";
+import { SCORABLE_VALUES } from "@/common/enums/test";
+import { WithId } from "@/common/types";
 
 const SCORABLE_OPTIONS = [
-  { value: "completamente_de_acuerdo", text: "Completamente de acuerdo", selected: false },
-  { value: "ligeramente_de_acuerdo", text: "Ligeramente de acuerdo", selected: false },
-  { value: "ligeramente_en_desacuerdo", text: "Ligeramente en desacuerdo", selected: false },
-  { value: "completamente_en_desacuerdo", text: "Completamente en desacuerdo", selected: false },
+  {
+    value: SCORABLE_VALUES.DEFINITELY_AGREE.toString(),
+    text: "Completamente de acuerdo",
+    selected: false,
+  },
+  {
+    value: SCORABLE_VALUES.SLIGHTLY_AGREE.toString(),
+    text: "Ligeramente de acuerdo",
+    selected: false,
+  },
+  {
+    value: SCORABLE_VALUES.SLIGHTLY_DISAGREE.toString(),
+    text: "Ligeramente en desacuerdo",
+    selected: false,
+  },
+  {
+    value: SCORABLE_VALUES.DEFINITELY_DISAGREE.toString(),
+    text: "Completamente en desacuerdo",
+    selected: false,
+  },
 ];
 
 export type TestQuestionFormValues = {
@@ -27,12 +44,16 @@ export type TestQuestionFormValues = {
 };
 
 type TestQuestionFormProps = {
-  onSubmit?: SubmitHandler<TestQuestion>;
+  onSubmit: SubmitHandler<Omit<TestQuestion, "category" | "test_id">>;
   question?: Partial<TestQuestion>;
+  categories: WithId<TestCategory>[];
 };
 
-export default function TestQuestionForm({ onSubmit, question }: TestQuestionFormProps) {
-  const { id: test_id } = useParams<{ id: string }>();
+export default function TestQuestionForm({
+  onSubmit,
+  question,
+  categories,
+}: TestQuestionFormProps) {
   const {
     handleSubmit,
     register,
@@ -43,20 +64,22 @@ export default function TestQuestionForm({ onSubmit, question }: TestQuestionFor
     resolver: zodResolver(FormSchema),
     defaultValues: {
       test_question_text: question?.text || "",
-      test_question_category_id: question?.category_id || 0,
+      test_question_category_id: question?.category_id || categories[0].id,
       test_question_scorable_values: question?.scorable_values || [],
     },
   });
 
-  // TODO: Replace with real categories from API
-  const categories = [
-    { value: "1", label: "Categoría 1" },
-    { value: "2", label: "Categoría 2" },
-  ];
+  const handleOnSubmit: SubmitHandler<FormFields> = (data) => {
+    onSubmit({
+      category_id: data.test_question_category_id,
+      scorable_values: data.test_question_scorable_values,
+      text: data.test_question_text,
+    });
+  };
 
   const categoryId = watch("test_question_category_id");
   return (
-    <form onSubmit={handleSubmit(() => {})} className="flex flex-col gap-4">
+    <form onSubmit={handleSubmit(handleOnSubmit)} className="flex flex-col gap-4">
       <div className="grid md:grid-cols-2 gap-4">
         <div>
           <Label htmlFor="text">Texto de la pregunta</Label>
@@ -73,7 +96,7 @@ export default function TestQuestionForm({ onSubmit, question }: TestQuestionFor
           <div className="relative">
             <Select
               defaultValue={`${categoryId}`}
-              options={categories}
+              options={categories.map((c) => ({ label: c.name, value: `${c.id}` }))}
               placeholder="Selecciona una categoría"
               onChange={(value) => setValue("test_question_category_id", +value)}
             />
@@ -92,7 +115,7 @@ export default function TestQuestionForm({ onSubmit, question }: TestQuestionFor
         <MultiSelect
           label="Selecciona los valores que aplican a esta pregunta"
           options={SCORABLE_OPTIONS}
-          onChange={(values) => setValue("test_question_scorable_values", values.map(Number))}
+          onChange={(values) => setValue("test_question_scorable_values", values)}
         />
         {errors.test_question_scorable_values && (
           <span className="text-red-500 text-xs">
@@ -110,7 +133,7 @@ export default function TestQuestionForm({ onSubmit, question }: TestQuestionFor
 const FormSchema = z.object({
   test_question_text: z.string().nonempty("Campo requerido"),
   test_question_category_id: z.number(),
-  test_question_scorable_values: z.number().array().min(1, "Debes seleccionar al menos un valor"),
+  test_question_scorable_values: z.string().array().min(1, "Debes seleccionar al menos un valor"),
 });
 
 type FormFields = z.infer<typeof FormSchema>;
