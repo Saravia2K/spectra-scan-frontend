@@ -12,7 +12,7 @@ import Button from "@/components/ui/button/Button";
 export default function DoctoresForm({
   onSubmit,
   defaultValues,
-}: TDocotresFormProps) {
+}: TDoctoresFormProps) {
   /**
    * Creating Schema with validations based on defaultValues
    */
@@ -149,7 +149,7 @@ export default function DoctoresForm({
   );
 }
 
-type TDocotresFormProps = {
+type TDoctoresFormProps = {
   onSubmit: SubmitHandler<TDoctoresFormData>;
   defaultValues?: Partial<
     Omit<TDoctoresFormFields, "password" | "confirmPassword">

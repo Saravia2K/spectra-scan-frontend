@@ -12,7 +12,12 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 
 import { useSidebar } from "@/providers/SidebarProvider";
-import { ChevronDownIcon, HorizontalDotsIcon, UserCircleIcon } from "@/icons";
+import {
+  DocsIcon,
+  UserCircleIcon,
+  ChevronDownIcon,
+  HorizontalDotsIcon,
+} from "@/icons";
 
 type NavItem = {
   name: string;
@@ -26,6 +31,11 @@ const navItems: NavItem[] = [
     icon: <UserCircleIcon />,
     name: "Doctores",
     path: "/doctores",
+  },
+  {
+    icon: <DocsIcon />,
+    name: "Tests",
+    path: "/tests",
   },
 ];
 // const navItems: NavItem[] = [
