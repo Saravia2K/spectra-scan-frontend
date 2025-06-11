@@ -1,4 +1,5 @@
 "use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import React, { useState } from "react";
@@ -28,7 +29,7 @@ export default function UserDropdown() {
         </span>
 
         <span className="block mr-1 font-medium text-theme-sm">
-          {doctor?.names} {doctor?.last_names}
+          {doctor?.names} {doctor?.last_names ?? ""}
         </span>
 
         <svg
@@ -58,7 +59,7 @@ export default function UserDropdown() {
       >
         <div>
           <span className="block font-medium text-gray-700 text-theme-sm dark:text-gray-400">
-            {doctor?.names} {doctor?.last_names}
+            {doctor?.names} {doctor?.last_names ?? ""}
           </span>
           <span className="mt-0.5 block text-theme-xs text-gray-500 dark:text-gray-400">
             {doctor?.email}

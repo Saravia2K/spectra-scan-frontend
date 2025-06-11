@@ -23,6 +23,13 @@ const questions = [
   "¿Te sientes motivado/a al comenzar tu día de trabajo?",
   "¿Consideras que tu trabajo tiene un propósito claro?",
   "¿Te sientes valorado/a por tu equipo de trabajo?",
+  "¿Tienes claridad sobre tus responsabilidades laborales?",
+  "¿Sientes que puedes expresar tus ideas libremente?",
+  "¿Te sientes satisfecho/a con tu equilibrio trabajo-vida personal?",
+  "¿Consideras que tienes oportunidades de crecimiento profesional?",
+  "¿Te sientes cómodo/a con la comunicación en tu equipo?",
+  "¿Sientes que tu trabajo contribuye al éxito de la organización?",
+  "¿Recomendarías tu lugar de trabajo a otros profesionales?",
 ];
 
 // Completa el array hasta 50 preguntas
